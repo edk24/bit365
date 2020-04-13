@@ -1,0 +1,18 @@
+{
+  "name": "edk24/365bit",
+  "description": "365bit",
+  "type": "library",
+  "license": "mit",
+  "authors": [
+    {
+      "name": "余晓波",
+      "email": "edk24@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Bit365\\": "src/"
+    }
+  },
+  "require": {}
+}
