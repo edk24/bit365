@@ -21,7 +21,6 @@ class Pay
     $this->merchantId = $merchantId;
   }
 
-
   /**
    * 创建订单 (CNY买USDT)
    *
@@ -38,8 +37,8 @@ class Pay
     $data['paySymbol'] = 'CNY';
     $data['payAccount'] = $payAccount; // 支付帐号
     $data['payChannel'] = $payChannel;
-    $data['requestTime'] = (string) time();
-    $data['payAmount'] = $payAmount;
+    $data['requestTime'] = (string) time() * 1000;
+    $data['payAmount'] = (float) $payAmount;
     $data['thirdMerchantId'] = $this->merchantId;
     $data['thirdUserId']  = $thirdUserId;
     $data['thirdTradeNo'] = $thirdTradeNo;
@@ -49,6 +48,7 @@ class Pay
     $sign = md5($json . $this->key);
     // sign getd
     $data['requestSign'] = strtolower($sign); //签名
+
     $this->sendData = json_encode($data);
     return $this;
   }
@@ -60,9 +60,7 @@ class Pay
    */
   public function send()
   {
-
     $curl = curl_init();
-
     curl_setopt_array($curl, array(
       CURLOPT_URL => sprintf('%s/trade/recharge/prepareRechargeTrade', $this->url),
       CURLOPT_RETURNTRANSFER => true,
@@ -77,12 +75,9 @@ class Pay
         "Content-Type: application/json"
       )
     ));
-    var_dump($this->sendData);
-
     $response = curl_exec($curl);
-
     curl_close($curl);
-    return  $response;
+    return json_decode($response, true);
   }
 
 
@@ -91,10 +86,9 @@ class Pay
    *
    * @return float
    */
-  public  function rateUSDTCNY(): float
+  public  function rateUSDTCNY()
   {
     $curl = curl_init();
-
     curl_setopt_array($curl, array(
       CURLOPT_URL => sprintf("%s/trade/recharge/rateUSDTCNY", $this->url),
       CURLOPT_RETURNTRANSFER => true,
@@ -105,9 +99,7 @@ class Pay
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => "POST",
     ));
-
     $response = curl_exec($curl);
-
     curl_close($curl);
     $json = json_decode($response, true);
     if ($json['status'] == 0) {
@@ -125,7 +117,6 @@ class Pay
   public function queryRechargeTrade($thirdTrade): ?array
   {
     $curl = curl_init();
-
     curl_setopt_array($curl, array(
       CURLOPT_URL => sprintf("%s/trade/recharge/queryRechargeTrade?thirdMerchantId=%s&thirdTradeNo=%s", $this->url, $this->merchantId, $thirdTrade),
       CURLOPT_RETURNTRANSFER => true,
@@ -136,9 +127,7 @@ class Pay
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => "GET",
     ));
-
     $response = curl_exec($curl);
-
     curl_close($curl);
     $json = json_decode($response, true);
     if ($json['status'] == 0) {
