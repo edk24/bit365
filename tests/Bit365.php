@@ -6,14 +6,16 @@ use Bit365\Pay;
 // 创建订单并发送请求
 $order_no = substr(md5(time() . time()), 0, 16);
 $a = new Pay('5', '');
-var_dump($a->create('27029049', 'alipay', $order_no, 299, md5('4'))->send());
+// var_dump($a->prepareRechargeTrade('27029049', 'alipay', $order_no, 299, md5('4')));
 
 // 查询CNY和USDT的兑换比例
-var_dump($a->rateUSDTCNY());
+// var_dump($a->rateUSDTCNY());
 
 // 查询订单
-var_dump($a->queryRechargeTrade($order_no));
+// var_dump($a->queryRechargeTrade($order_no));
 
+// 提现
+var_dump($a->prepareSaleTrade('abc@qq.com', '8292887348934239', '中国银行', '园区支行', 5001, substr(md5(101), 0, 16), substr(md5(2000), 0, 16)));
 
 // array(24) {
 //   ["thirdMerchantId"]=>
